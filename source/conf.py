@@ -6,7 +6,7 @@
 # -- Project information -----------------------------------------------------
 # https://www.sphinx-doc.org/en/master/usage/configuration.html#project-information
 
-project = 'LYNBIDL用户指南'
+project = 'BIDL用户指南'
 copyright = '2024, 北京灵汐科技有限公司 & 中电南湖研究院. '
 author = '北京灵汐科技有限公司 & 中电南湖研究院'
 release = '1.9.0.0'
