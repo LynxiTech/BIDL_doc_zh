@@ -1,0 +1,19 @@
+访问 `BIDL开源页面 <https://github.com/openBII/BIDL>`__ 获取源码工程。
+
+将https://github.com/openBII/BIDL仓库克隆到本地目录，例如：
+
+git clone https://github.com/openBII/BIDL.git
+
+请注意，该安装包仅包含项目源代码；关于代码文件夹的详细信息，请参阅 “目录说明”。
+
+**资源包**
+
+资源包包含一些压缩文件，可从百度网盘下载（见Readme），下载后，请将它们解压到与百度网盘内相同的目录下。
+
+该资源包包含适用于 BIDL 的数据集、预训练权重（可在 GPU/CPU 上运行）以及编译后的模型文件（可在灵汐芯片上运行），具体包括：
+
+- data：数据集；
+
+- model_files：模型文件；
+
+- weight_files：权重文件。

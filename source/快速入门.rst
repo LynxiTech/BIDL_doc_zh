@@ -1,0 +1,180 @@
+快速入门
+===============================================================================
+
+本章节以dvs-mnist为例，说明BIDL工程的使用方法。
+
+.. _choose_config_file:
+
+选择配置文件
+--------------------------------------------------------------------------------
+
+dvs-mnist数据集使用 *clif3fc3dm_itout-b16x1-dvsmnist.py* 配置文件。由于dvs-mnist
+属于dvs数据的分类，所以在 *applications/classification/dvs* 目录下创建 *dvs-mnist* 
+文件夹，又根据其模型结构，在新建的 *dvs-mnist* 文件夹下创建 *clif3fc3dm* 文件夹，
+最后将配置文件放到该路径下。
+
+.. attention:: 配置文件都是Python源代码文件，文件名后缀都是.py。
+
+准备数据集
+--------------------------------------------------------------------------------
+
+查看 :ref:`choose_config_file` 中选择的配置文件中设定的数据集路径，然后在工程根
+目录下新建对应的数据集的目录。
+
+::
+
+   data = dict(
+      samples_per_gpu=16,
+      workers_per_gpu=2,
+      train=dict(
+         type=dataset_type,
+         data_prefix='data/dvsmnist/train/',
+         pipeline=train_pipeline
+      ),
+      val=dict(
+         type=dataset_type,
+         data_prefix='data/dvsmnist/val/',
+         pipeline=test_pipeline,
+         test_mode=True
+      ),
+      test=dict(
+         type=dataset_type,
+         data_prefix='data/dvsmnist/test/',
+         pipeline=test_pipeline,
+         test_mode=True
+      )
+   )
+
+.. _mxxl:
+
+模型训练
+--------------------------------------------------------------------------------
+
+在 *tools* 目录下，执行以下命令，开始训练模型。
+
+::
+   
+   python train.py --config clif3fc3dm_itout-b16x1-dvsmnist
+
+.. attention:: 
+   
+   ``--config`` 后的参数 ``clif3fc3dm_itout-b16x1-dvsmnist`` 是 :ref:`choose_config_file` 
+   章节中选择的配置文件的名称去掉.py。
+
+训练开始后，会依次打印：
+
+- 本次训练所涉及到的配置信息，包括：
+
+  - 配置文件中的信息
+  - checkpoint保存的路径信息。
+
+      checkpoint文件默认会保存在项目根目录 */work_dirs/clif3fc3dm_itout-b16x1-dvsmnist/* 下，
+      会在此路径下生成一个 *lastest.pth* 文件，为最后一个epoch保存的checkpoint文件，此外还会
+      生成一个 *best.pth* 文件，保存的是验证集精度最优的checkpoint文件。目录树如下：
+
+      ::
+
+         clif3fc3dm_itout-b16x1-dvsmnist/
+         ├── 20240829_171552.log #本次训程中的所有日志，如损失、正确率
+         ├── best.pth #验证集最优的模型存档点，即权重
+         └── latest.pth #最后一轮训练的模型存档点，即权重
+
+   .. attention::
+
+      如无特殊需求，不要用 ``--work-dir`` 传入其他路径来保存 *checkpoint* 文件。
+
+- 之后的内容为模型训练的日志信息，如下是前两个epoch输出的日志信息：
+
+::
+
+   2024-08-29 17:33:37,021 - cls - INFO - Epoch [1][100/452] lr:
+   2.060e-02 top-1: 22.7500 top-5: 62.5000 loss: 2.1440
+
+   2024-08-29 17:33:48,696 - cls - INFO - Epoch [1][200/452] lr:
+   4.040e-02 top-1: 73.8750 top-5: 96.8125 loss: 1.1264
+
+   2024-08-29 17:34:00,255 - cls - INFO - Epoch [1][300/452] lr:
+   6.020e-02 top-1: 89.1875 top-5: 98.6250 loss: 0.8457
+
+   2024-08-29 17:34:11,309 - cls - INFO - Epoch [1][400/452] lr:
+   8.000e-02 top-1: 90.6250 top-5: 99.1250 loss: 0.7871
+
+   2024-08-29 17:34:16,431 - cls - INFO - Saving checkpoint at 1 epochs
+
+   2024-08-29 17:34:21,611 - cls - INFO - Epoch(val) [1][20] top-1:
+   87.1275 top-5: 98.9238
+
+   2024-08-29 17:34:31,200 - cls - INFO - Epoch [2][100/452] lr:
+   9.980e-02 top-1: 94.3750 top-5: 99.6250 loss: 0.7186
+
+   2024-08-29 17:34:41,470 - cls - INFO - Epoch [2][200/452] lr:
+   9.980e-02 top-1: 94.6875 top-5: 99.6250 loss: 0.6894
+
+   2024-08-29 17:34:51,961 - cls - INFO - Epoch [2][300/452] lr:
+   9.980e-02 top-1: 97.3125 top-5: 99.8750 loss: 0.6128
+
+   2024-08-29 17:35:02,393 - cls - INFO - Epoch [2][400/452] lr:
+   9.980e-02 top-1: 97.3750 top-5: 99.9375 loss: 0.5926
+
+   2024-08-29 17:35:07,965 - cls - INFO - Saving checkpoint at 2 epochs
+
+   2024-08-29 17:35:14,549 - cls - INFO - Epoch(val) [2][20] top-1:
+   98.1374 top-5: 100.0000
+
+训练结束，将最优的权重文件拷贝到资源包中的权重文件路径中： 
+*/weight_files/classification/clif3fc3dm/lif*
+
+模型推理（GPU）
+--------------------------------------------------------------------------------
+
+在 *tools* 目录下，执行以下命令，进行模型推理。
+
+::
+
+   python test.py --config clif3fc3dm_itout-b16x1-dvsmnist --checkpoint latest.pth --use_lyngor 0 --use_legacy 0
+
+推理过程如下：
+
+::
+
+   100%|███████████████████████████████████████████████████████████████████████████████████████████████████████████████████| 2409/2409 [01:23<00:00, 28.85it/s]
+   acc top-1: 99.21 top-5: 100.00
+   gpu test speed = 576.6303 fps
+   gpu test speed (without pipeline) = 583.3422 fps
+
+由于在进行训练的时候，checkpoint文件的保存路径默认是固定的，且次级目录与配置文件名称相同，所以 ``--checkpoint`` 的参数只需指定 *pth* 文件名称即可。
+
+模型推理（灵汐芯片）
+--------------------------------------------------------------------------------
+
+在BIDL框架中，采用开关切换后台执行环境，具体的，在使用 *test.py* 进行时，需配置：
+
++----------------+------------------------------------------------------------+
+| 配置项         | 说明                                                       |
++================+============================================================+
+| \-\-us_lyngor  | 用于标识是否使用Lyngor进行编译。                           |
+|                |                                                            |
+|                | 【数据类型】ENUM                                           |
+|                |                                                            |
+|                | 【取值范围】                                               |
+|                |                                                            |
+|                | - 1：表示使用Lyngor进行编译，采用灵汐芯片执行；            |
+|                | - 0：表示不使用Lyngor进行编译（GPU执行）。                 |
++----------------+------------------------------------------------------------+
+| \-\-use_legacy | 用于标识是否直接加载历史编译生成物、跳过编译环节。         |
+|                |                                                            |
+|                | 【数据类型】ENUM                                           |
+|                |                                                            |
+|                | 【取值范围】                                               |
+|                |                                                            |
+|                | - 1：表示加载历史编译生成物、跳过编译环节；                |
+|                | - 0：表示不加载历史编译生成物、不跳过编译环节。            |
++----------------+------------------------------------------------------------+
+
+如：
+
+::
+
+   python test.py --config clif3fc3dm_itout-b16x1-dvsmnist --checkpoint latest.pth --use_lyngor 1 --use_legacy 0
+
+.. attention:: 需要将训练好的文件（位于 *work_dirs* ）及验证数据集拷贝到灵汐类脑计算设备中才可执行此脚本。

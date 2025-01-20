@@ -1,0 +1,29 @@
+.. note:: 如果使用pip安装速度过慢，或网络连接超时等，可以在pip命令中指定清华源。
+
+::
+  
+  -i https://pypi.tuna.tsinghua.edu.cn/simple --trusted-host pypi.tuna.tsinghua.edu.cn
+
+部署训练环境
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+本框架所依赖的GPU训练环境主要是Pytorch，需要先安装Pytorch。
+
+安装GPU版的Pytorch安装命令如下：
+
+::
+
+  pip install torch torchvision torchaudio
+
+
+部署编译环境
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+由于编译模型使用的Lyngor只支持CPU版的Pytorch，所以需要重新配置CPU版的Pytorch环境。
+另外，编译部署也需要Lyngor和SDK软件，以及APU硬件的支持。
+
+执行以下命令，安装Pytorch官网提供的最新稳定版Pytorch。
+
+::
+
+  pip install torch torchvision torchaudio --extra-index-url https://download.pytorch.org/whl/cpu
