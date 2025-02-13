@@ -1,15 +1,12 @@
 模型说明
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-CIFAR10-DVS内循环案例的配置文件为resnetlif50-it-b16x1-cifar10dvs.py，采用resnet50
-模型结构，与外循环模型结构保持一致。模型backbone名称为 *ResNetLif* ，在
+CIFAR10-DVS内循环案例的配置文件为resnetlif50-it-b16x1-cifar10dvs.py，采用resnet50模型结构，与外循环模型结构保持一致。模型backbone名称为 *ResNetLif* ，在
 *bidlcls/models/backbones/residual/bidl_resnetlif.py* 文件中定义。
 
-与外循环不同的是，无论是否在APU上运行，模型均接受5维的数据输入[t,b,c,h,w]，对于lif层，
-将时间拍展开进行计算，而对于卷积层等，将时间拍维度和batch维度合并，按照4维数据进行计算。
+与外循环不同的是，无论是否在APU上运行，模型均接受5维的数据输入[t,b,c,h,w]，对于lif层，将时间拍展开进行计算，而对于卷积层等，将时间拍维度和batch维度合并，按照4维数据进行计算。
 
 编译和部署
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-在APU上编译时，模型结构中的lif层需采用 *bidlcls/models/layers/lif_itin.py* 文件中的
-Lif2dIt类。
+在APU上编译时，模型结构中的lif层需采用 *bidlcls/models/layers/lif_itin.py* 文件中的Lif2dIt类。

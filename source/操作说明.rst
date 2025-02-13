@@ -46,21 +46,15 @@ BIDL的使用流程分为如下几个步骤：
 选择已支持的数据集
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-目前已添加到BIDL框架中的数据集均定义在 *bidlcls/datasets/* 目录下，每个数据集对应一个
-文件，如 *bidl_cifar10dvs.py* 文件实现了将CIFAR10-DVS数据集添加到BIDL框架中使用的功能，
-即不同的文件将不同的数据集添加到了BIDL框架中，关于其中部分数据集构成的介绍参见
+目前已添加到BIDL框架中的数据集均定义在 *bidlcls/datasets/* 目录下，每个数据集对应一个文件，如 *bidl_cifar10dvs.py* 文件实现了将CIFAR10-DVS数据集添加到BIDL框架中使用的功能，即不同的文件将不同的数据集添加到了BIDL框架中，关于其中部分数据集构成的介绍参见
 :ref:`data_task` 。
 
-根据在 *bidlcls/datasets/* 目录下的文件中定义的数据集名称来选择使用不同的数据集，比如
-CIFAR10-DVS数据集在 *bidl_cifar10dvs.py* 文件定义的名称为Cifar10Dvs，可以将此名称写入需要
-使用此数据集的配置文件中，具体的方法可以参考 :ref:`edit_config_file` 中 *编写配置文件* 段
-落的数据（data）部分。
+根据在 *bidlcls/datasets/* 目录下的文件中定义的数据集名称来选择使用不同的数据集，比如CIFAR10-DVS数据集在 *bidl_cifar10dvs.py* 文件定义的名称为Cifar10Dvs，可以将此名称写入需要使用此数据集的配置文件中，具体的方法可以参考 :ref:`edit_config_file` 中 *编写配置文件* 段落的数据（data）部分。
 
 构建新的数据集
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-根据数据集的构成，可以将数据集分为三类：帧序列、DVS事件数据、一维数据，帧序列数据一般是从
-视频片段中固定间隔抽帧来构成数据集，DVS事件数据通过将事件信息转换成帧序列的方式构成数据集。
+根据数据集的构成，可以将数据集分为三类：帧序列、DVS事件数据、一维数据，帧序列数据一般是从视频片段中固定间隔抽帧来构成数据集，DVS事件数据通过将事件信息转换成帧序列的方式构成数据集。
 
 各种形态的数据集的预处理方式会有区别，但在添加到BIDL框架中时，均需在
 *bidlcls/datasets/* 目录下定义一个相应的文件，且在文件中需要定义对应的类，具体步骤为：
@@ -71,8 +65,7 @@ CIFAR10-DVS数据集在 *bidl_cifar10dvs.py* 文件定义的名称为Cifar10Dvs�
 
 下面以CIFAR10DVS数据集的添加过程为例，介绍在BIDL框架中添加数据集的步骤。
 
-1. 在 *bidlcls/datasets/* 目录下创建一个 *bidl_cifar10dvs.py* 文件，在该文件中创建一个
-   Cifar10Dvs类以加载数据。
+1. 在 *bidlcls/datasets/* 目录下创建一个 *bidl_cifar10dvs.py* 文件，在该文件中创建一个Cifar10Dvs类以加载数据。
 
    ::
 
@@ -106,8 +99,7 @@ CIFAR10-DVS数据集在 *bidl_cifar10dvs.py* 文件定义的名称为Cifar10Dvs�
          ...
       ]
 
-3. 在 *configs/* 目录下的配置文件中使用新的数据集，配置文件的详细使用方法参考 
-   :ref:`edit_config_file` 的 *编写配置文件* 部分。
+3. 在 *configs/* 目录下的配置文件中使用新的数据集，配置文件的详细使用方法参考 :ref:`edit_config_file` 的 *编写配置文件* 部分。
 
    ::
 
@@ -142,50 +134,28 @@ CIFAR10-DVS数据集在 *bidl_cifar10dvs.py* 文件定义的名称为Cifar10Dvs�
 选择已有的网络模型
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-BIDL框架中已有的网络模型均定义在bidlcls/models/backbones目录下，
-可通过映射部署在灵汐芯片上，其中 *bidl_backbones_itout.py* 
-和 *bidl_resnetlif_itout.py* 中定义的都是外循环版的网络模型，即时间步的循环在神经网络层外面，
-区别于时间步循环在网络层里面的网络模型。
+BIDL框架中已有的网络模型均定义在bidlcls/models/backbones目录下，可通过映射部署在灵汐芯片上，其中 *bidl_backbones_itout.py* 和 *bidl_resnetlif_itout.py* 中定义的都是外循环版的网络模型，即时间步的循环在神经网络层外面，区别于时间步循环在网络层里面的网络模型。
 
-可以根据数据集的特点，如数据集的规模或复杂程度等，选择不同的网络模型进行训练，例如对于
-Cifar10Dvs数据集，既可以选择SeqClif5Fc2CdItout网络模型，也可以选择ResNetLifItout网络模型，
-在后者为ResNet18时，其accuracy_top-1相比前者提升4%，后者所需的训练时间也长于前者。
+可以根据数据集的特点，如数据集的规模或复杂程度等，选择不同的网络模型进行训练，例如对于Cifar10Dvs数据集，既可以选择SeqClif5Fc2CdItout网络模型，也可以选择ResNetLifItout网络模型，在后者为ResNet18时，其accuracy_top-1相比前者提升4%，后者所需的训练时间也长于前者。
 
-针对特定的数据集选择的网络模型，需要将此网络模型的名称写入数据集相应的配置文件中，具体的
-方法可以参考 :ref:`config_content` 章节中的编写配置文件内容的模型（model）部分。
+针对特定的数据集选择的网络模型，需要将此网络模型的名称写入数据集相应的配置文件中，具体的方法可以参考 :ref:`config_content` 章节中的编写配置文件内容的模型（model）部分。
 
 构建新的网络模型
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-典型的网络包括Sequential类网络和非Sequential类网络系列，分别位于 
-*bidlcls/models/backbones* 路径下的 *sequential* 文件夹和 *residual* 文件夹，下面举例
-介绍这两类典型骨干网络的构建方法。
+典型的网络包括Sequential类网络和非Sequential类网络系列，分别位于 *bidlcls/models/backbones* 路径下的 *sequential* 文件夹和 *residual* 文件夹，下面举例介绍这两类典型骨干网络的构建方法。
 
-典型的外循环网络模型名称的后缀都有 *Itout* ，是Iterate outside的缩写，用于表示时间步的
-循环在神经网络层外面。
+典型的外循环网络模型名称的后缀都有 *Itout* ，是Iterate outside的缩写，用于表示时间步的循环在神经网络层外面。
 
 **Sequential类网络**
 
-下面以类VGG的SeqClif3Fc3DmItout网络模型的添加过程为例，介绍在BIDL框架中添加Sequential
-类外循环版网络模型的步骤。
+下面以类VGG的SeqClif3Fc3DmItout网络模型的添加过程为例，介绍在BIDL框架中添加Sequential类外循环版网络模型的步骤。
 
-在文件 *bidlcls/models/backbones/sequential/bidl_backbones_itout.py* 中添加时间循环在层外
-的SeqClif3Fc3DmItout网络模型。
+在文件 *bidlcls/models/backbones/sequential/bidl_backbones_itout.py* 中添加时间循环在层外的SeqClif3Fc3DmItout网络模型。
 
-在网络构建部分，此网络的三层卷积所用的Conv2d是conv2dLif不，而不是Conv2dLifIt层，因为前者
-只能处理单个时间步。各个时间步的结果需要聚合到一起，这里采用的模式为 *mean* ，即取均值的
-方式，还可以选择 *sum* 或 *pick* 模式。而Flatten层之前的数据维度为(B,C,H,W)，因此Flatten
-层将CHW三个维度合在一起，然后输入后面的三层全连接网络，此三层全连接网络可以使用
-``nn.Sequential`` 结构，让代码更为简洁。
+在网络构建部分，此网络的三层卷积所用的Conv2d是conv2dLif不，而不是Conv2dLifIt层，因为前者只能处理单个时间步。各个时间步的结果需要聚合到一起，这里采用的模式为 *mean* ，即取均值的方式，还可以选择 *sum* 或 *pick* 模式。而Flatten层之前的数据维度为(B,C,H,W)，因此Flatten层将CHW三个维度合在一起，然后输入后面的三层全连接网络，此三层全连接网络可以使用``nn.Sequential`` 结构，让代码更为简洁。
 
-在网络 ``forward`` 部分，在特定网络层第一次运行的时候，需要显式调用reset方法给层中的部分
-状态变量赋予形状，这些网络层的详细介绍参见 :ref:`sjymx` 。另外根据是在GPU上训练还是在灵
-汐芯片上推理，有两个分支：对于GPU训练分支，执行过程跟网络构建部分的顺序一致，三层卷积是
-通过循环的方式执行所有时间步的，然后将所有时间步的执行结果取均值，接着Flatten展平后输入
-全连接网络；而对于芯片推理分支，由于所有时间步的执行过程都是相同的，因此只需要执行一遍三
-层卷积，然后采用 ``ops.custom.tempAdd`` 的方式将所有时间步的结果加起来，接着Fatten展平后
-输入全连接网络，通过trace可以生成对应的op图，然后映射到芯片中通过LynSDK循环调用就可以实现
-时间步的循环，而对应于GPU训练的取均值，会通过LynSDK对tempAdd的结果取均值。
+在网络 ``forward`` 部分，在特定网络层第一次运行的时候，需要显式调用reset方法给层中的部分状态变量赋予形状，这些网络层的详细介绍参见 :ref:`sjymx` 。另外根据是在GPU上训练还是在灵汐芯片上推理，有两个分支：对于GPU训练分支，执行过程跟网络构建部分的顺序一致，三层卷积是通过循环的方式执行所有时间步的，然后将所有时间步的执行结果取均值，接着Flatten展平后输入全连接网络；而对于芯片推理分支，由于所有时间步的执行过程都是相同的，因此只需要执行一遍三层卷积，然后采用 ``ops.custom.tempAdd`` 的方式将所有时间步的结果加起来，接着Fatten展平后输入全连接网络，通过trace可以生成对应的op图，然后映射到芯片中通过LynSDK循环调用就可以实现时间步的循环，而对应于GPU训练的取均值，会通过LynSDK对tempAdd的结果取均值。
 
 ::
 
@@ -265,8 +235,7 @@ Cifar10Dvs数据集，既可以选择SeqClif5Fc2CdItout网络模型，也可以�
          ...
       ]
 
-在各数据集对应文件夹下的配置文件中使用新的主干网络，配置文件的详细使用方法
-参考 :ref:`edit_config_file` 说明文档。
+在各数据集对应文件夹下的配置文件中使用新的主干网络，配置文件的详细使用方法参考 :ref:`edit_config_file` 说明文档。
 
 ::
 
@@ -288,29 +257,19 @@ Cifar10Dvs数据集，既可以选择SeqClif5Fc2CdItout网络模型，也可以�
 
 **非Sequential类网络**
 
-下面以类ResNetLifItout网络模型的添加过程为例，介绍在BIDL框架中添加非Sequential类外
-循环版网络模型的步骤。
+下面以类ResNetLifItout网络模型的添加过程为例，介绍在BIDL框架中添加非Sequential类外循环版网络模型的步骤。
 
-在文件 *bidlcls/models/backbones/residual/bidl_resnetlif_itout.py* 中添加时间循环在层
-外的ResNetLifItout网络模型。
+在文件 *bidlcls/models/backbones/residual/bidl_resnetlif_itout.py* 中添加时间循环在层外的ResNetLifItout网络模型。
 
 在网络构建部分，参考经典的ResNet组建方式构建网络，池化层采用全局平均池化。
 
-由于非Sequential类网络结构比较复杂，在特定网络层第一次运行的时候，不采用手动显式调用
-``reset`` 方法给层中的状态变量赋予形状的方式，而是通过注册自定义hook的方式来实现。
+由于非Sequential类网络结构比较复杂，在特定网络层第一次运行的时候，不采用手动显式调用``reset`` 方法给层中的状态变量赋予形状的方式，而是通过注册自定义hook的方式来实现。
 
-利用 ``nn.modules`` 自带的 ``register_forward_pre_hook`` 方法，在 ``_register_lyn_reset_hook`` 
-函数中遍历整个网络的所有层，在需要给状态变量赋予形状的层中注册自定义的 ``lyn_reset_hook`` ；
-然后在我们自定义的hook中通过 ``setattr()`` 方法给注册了此hook的层添加一个属性 ``lyn_cnt`` 
-并给它赋初值为 ``0`` ，在一个样本 ``forward`` 的第一个时间步的时候会调用注册了自定义hook的层
-的 ``reset`` 方法，将其中的状态变量赋予形状并将此层的 ``lyn_cnt`` 加 ``1`` ，而在其他时间步
-由于 ``lyn_cnt`` 非 ``0`` ，则不需要调用此层的 ``reset`` 方法了。
+利用 ``nn.modules`` 自带的 ``register_forward_pre_hook`` 方法，在 ``_register_lyn_reset_hook`` 函数中遍历整个网络的所有层，在需要给状态变量赋予形状的层中注册自定义的 ``lyn_reset_hook`` ；然后在我们自定义的hook中通过 ``setattr()`` 方法给注册了此hook的层添加一个属性 ``lyn_cnt`` 并给它赋初值为 ``0`` ，在一个样本 ``forward`` 的第一个时间步的时候会调用注册了自定义hook的层的 ``reset`` 方法，将其中的状态变量赋予形状并将此层的 ``lyn_cnt`` 加 ``1`` ，而在其他时间步由于 ``lyn_cnt`` 非 ``0`` ，则不需要调用此层的 ``reset`` 方法了。
 
-而在一个样本 ``forward`` 执行完了所有的时间步之后，需要调用 ``self._reset_lyn_cnt`` 方法将
-``lyn_cnt`` 属性的值清零，以便于下一个样本对特定的层中的状态变量赋予形状。
+而在一个样本 ``forward`` 执行完了所有的时间步之后，需要调用 ``self._reset_lyn_cnt`` 方法将``lyn_cnt`` 属性的值清零，以便于下一个样本对特定的层中的状态变量赋予形状。
 
-在GPU上进行训练时，执行过程跟网络构建部分的顺序一致，全连接之前的层是通过循环的方式执行所有时
-间步的，然后将所有时间步的执行结果取均值，接着输入全连接网络。
+在GPU上进行训练时，执行过程跟网络构建部分的顺序一致，全连接之前的层是通过循环的方式执行所有时间步的，然后将所有时间步的执行结果取均值，接着输入全连接网络。
 
 ::
 
@@ -467,8 +426,7 @@ Cifar10Dvs数据集，既可以选择SeqClif5Fc2CdItout网络模型，也可以�
 - clif5fc2cd_itout
 - resnetlif10_itout
 
-*itout* 是iterate outside的缩写，用于表示时间步的循环在神经网络层外面，典型的外循环网络
-模型名称均有 *itout* 后缀。
+*itout* 是iterate outside的缩写，用于表示时间步的循环在神经网络层外面，典型的外循环网络模型名称均有 *itout* 后缀。
 
 **训练信息**
 
@@ -496,8 +454,7 @@ Cifar10Dvs数据集，既可以选择SeqClif5Fc2CdItout网络模型，也可以�
 
 *resnetlif18-b16x4-jester-cos160e.py*
 
-使用resnetlif18作为骨干网络，训练策略为单个GPU的上 ``batchsize = 16`` ，单个GPU的线程数为
-4，数据集为jester数据集，采用余弦退火学习率策略，最大训练160个epoch。
+使用resnetlif18作为骨干网络，训练策略为单个GPU的上 ``batchsize = 16`` ，单个GPU的线程数为4，数据集为jester数据集，采用余弦退火学习率策略，最大训练160个epoch。
 
 .. _config_content:
 
@@ -511,8 +468,7 @@ Cifar10Dvs数据集，既可以选择SeqClif5Fc2CdItout网络模型，也可以�
 - 训练策略（schedule）
 - 运行设置（runtime）
 
-以 *applications/classification/dvs/dvs-mnist/clif3fc3dm/clif3fc3dm_itout-b16x1-dvsmnist.py* 
-为例对上述四个部分分别进行说明。
+以 *applications/classification/dvs/dvs-mnist/clif3fc3dm/clif3fc3dm_itout-b16x1-dvsmnist.py* 为例对上述四个部分分别进行说明。
 
 **模型（model）**
 
@@ -600,8 +556,7 @@ Cifar10Dvs数据集，既可以选择SeqClif5Fc2CdItout网络模型，也可以�
       )
    )
 
-数据处理流水线（pipeline），定义了所有准备数据字典的步骤，由一系列操作组成，
-每个操作都将以一个字典作为输入，并输出一个字典。数据流水线中的操作方法都定义在
+数据处理流水线（pipeline），定义了所有准备数据字典的步骤，由一系列操作组成，每个操作都将以一个字典作为输入，并输出一个字典。数据流水线中的操作方法都定义在
 *bidlcls/datasets/pipeline* 文件夹下。
 
 数据流水线中的操作可以分为以下三个类别：
@@ -609,17 +564,14 @@ Cifar10Dvs数据集，既可以选择SeqClif5Fc2CdItout网络模型，也可以�
 - 数据加载：从文件中加载图像，定义在 *pipelines/bidl_loading.py* 中，例如 
   ``LoadSpikesInHdf5()`` ，从Hdf5类型的文件中读取dvs数据集。
 - 预处理：对图像进行旋转和裁剪等操作，定义在 *pipelines/bidl_formating.py* 和
-  *pipelines/bidl_transform.py* 中，例如 ``RandomCropVideo()`` ，对图像进行随
-  机裁剪。
-- 格式化：将图像或标签转换至指定的数据类型，定义在 *pipelines/bidl_formating.py* 
-  中，例如 ``ToTensorType()`` ，将处理好的图像转换为Tensor类型。
+  *pipelines/bidl_transform.py* 中，例如 ``RandomCropVideo()`` ，对图像进行随机裁剪。
+- 格式化：将图像或标签转换至指定的数据类型，定义在 *pipelines/bidl_formating.py* 中，例如 ``ToTensorType()`` ，将处理好的图像转换为Tensor类型。
 
 **训练策略（schedule）**
 
 主要包含优化器设置、optimizer hook设置、学习率策略和runnner设置。
 
-- optimizer：优化器设置信息，支持pytorch中所有的优化器，同时它们的参数设置与pytorch
-  中的优化器参数一致，可参考相关Pytorch文档。
+- optimizer：优化器设置信息，支持pytorch中所有的优化器，同时它们的参数设置与pytorch中的优化器参数一致，可参考相关Pytorch文档。
 - optimizer_config：optimizer hook的配置文件，如设置梯度限制。
 - lr_config：学习率策略，支持CosineAnnealing、Step等。
 
@@ -667,14 +619,12 @@ Cifar10Dvs数据集，既可以选择SeqClif5Fc2CdItout网络模型，也可以�
 查看训练日志
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-训练所保存的日志和检查点存档在 *work_dirs/resnetlif10-b16x1-dvsmnist/* 保存，保存文件的
-目录可参考 :ref:`mxxl` 。
+训练所保存的日志和检查点存档在 *work_dirs/resnetlif10-b16x1-dvsmnist/* 保存，保存文件的目录可参考 :ref:`mxxl` 。
 
 部署部分
 ----------------------------------------------------------------------------------------
 
-部署部分主要包括了先在GPU上进行评估、以及为了适用于Lyngor编译的骨干网定义而进行的对骨干
-网的替换方法，最后在APU上进行评估/部署。
+部署部分主要包括了先在GPU上进行评估、以及为了适用于Lyngor编译的骨干网定义而进行的对骨干网的替换方法，最后在APU上进行评估/部署。
 
 使用GPU进行评估
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -691,8 +641,7 @@ Cifar10Dvs数据集，既可以选择SeqClif5Fc2CdItout网络模型，也可以�
 
 分别设置 ``--config`` 和 ``--checkpoint`` ，选择目录下已定义的配置文件和对应的checkpoint文件。
 
-比如，用资源包 *weight_files* 中对应路径下的 *latest.pth* 权重文件，用于在Jester验证集上
-评估模型性能：
+比如，用资源包 *weight_files* 中对应路径下的 *latest.pth* 权重文件，用于在Jester验证集上评估模型性能：
 
 在 *tools/* 目录下执行如下命令：
 
@@ -714,11 +663,9 @@ Cifar10Dvs数据集，既可以选择SeqClif5Fc2CdItout网络模型，也可以�
 使用Lyngor进行编译
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-使用Lyngor进行编译，还需要执行命令后加上参数 ``--use_legacy 0`` ，即不加载历史编译生成物，
-而是直接编译。
+使用Lyngor进行编译，还需要执行命令后加上参数 ``--use_legacy 0`` ，即不加载历史编译生成物，而是直接编译。
 
-前提条件：使用Lyngor编译，需要先执行 *lynadapter* 目录下的 *build_run_lif.sh* 脚本，
-在Lyngor中注册自定义算子。
+前提条件：使用Lyngor编译，需要先执行 *lynadapter* 目录下的 *build_run_lif.sh* 脚本，在Lyngor中注册自定义算子。
 
 ::
 
@@ -731,9 +678,7 @@ Cifar10Dvs数据集，既可以选择SeqClif5Fc2CdItout网络模型，也可以�
       globals.set_value('ON_APU', False)
       cfg.data.samples_per_gpu = 1
 
-上述代码中，如果判断为在APU上编译，就会将模型的backbone的两个配置参数 ``on_apu`` 和 ``fit`` 
-设置为 ``True`` ，即每个lif类实例会生成一个UUID且会将LIF神经元的部分计算用自定义算子的方式
-实现。此外，还将数据集的 ``batchsize`` 设置为 ``1`` ，输入类型设置为 ``uint8`` 以适配底层。
+上述代码中，如果判断为在APU上编译，就会将模型的backbone的两个配置参数 ``on_apu`` 和 ``fit`` 设置为 ``True`` ，即每个lif类实例会生成一个UUID且会将LIF神经元的部分计算用自定义算子的方式实现。此外，还将数据集的 ``batchsize`` 设置为 ``1`` ，输入类型设置为 ``uint8`` 以适配底层。
 
 ::
 
@@ -747,8 +692,7 @@ Cifar10Dvs数据集，既可以选择SeqClif5Fc2CdItout网络模型，也可以�
 上述代码中，先从数据集中获取模型输入大小，即t,c,h,w值。之后通过lyn_compilee中的
 ``model_compile`` 方法执行Lyngor编译， ``in_size`` 为四维大小，且 ``batchsize`` 为 ``1`` 。
 
-在 ``model_compile`` 方法中主要调用 ``run_custom_op_in_model_by_lyn()`` 函数进行编译操作，
-该函数调用Lyngor相关接口函数加载模型和执行编译，具体的实现代码如下：
+在 ``model_compile`` 方法中主要调用 ``run_custom_op_in_model_by_lyn()`` 函数进行编译操作，该函数调用Lyngor相关接口函数加载模型和执行编译，具体的实现代码如下：
 
 ::
 
@@ -813,14 +757,12 @@ Cifar10Dvs数据集，既可以选择SeqClif5Fc2CdItout网络模型，也可以�
 跳过Lyngor编译
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-如果已有相关模型的编译生成物，则可以跳过重新编译的步骤，直接加载历史编译生成物，具体的
-方法是执行命令时加上 ``--use_legacy 1`` 。
+如果已有相关模型的编译生成物，则可以跳过重新编译的步骤，直接加载历史编译生成物，具体的方法是执行命令时加上 ``--use_legacy 1`` 。
 
 SDK推理
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-得到模型的编译生成物后就可以进行SDK推理。首先根据芯片ID、编译生成物的路径以及时间拍数实
-例化 ``ApuRun`` 类。
+得到模型的编译生成物后就可以进行SDK推理。首先根据芯片ID、编译生成物的路径以及时间拍数实例化 ``ApuRun`` 类。
 
 ::
 
@@ -921,8 +863,7 @@ SDK推理
          prog_bar.update()
          output = arun.get_output()
 
-代码中，对每个batch的测试数据进行遍历。data_img中存储1个测试样本（已设置 ``batchsize`` 为 ``1`` ）
-的数据。之后再调用 ``arun`` 类的 ``run`` 方法在灵汐芯片中运行该数据。 ``run`` 函数如下：
+代码中，对每个batch的测试数据进行遍历。data_img中存储1个测试样本（已设置 ``batchsize`` 为 ``1`` ）的数据。之后再调用 ``arun`` 类的 ``run`` 方法在灵汐芯片中运行该数据。 ``run`` 函数如下：
 
 ::
 
@@ -964,10 +905,8 @@ SDK推理
             ret = sdk.lyn_stream_add_callback(self.apu_stream_r, get_result_callback, [self, currentInbuf, currentOutbuf])
             self.run_times += 1
 
-上述推理过程中，先将多拍的数据拷贝到设备侧，再对时间拍进行循环，每一拍推理一次，并且如果是
-第一帧的话调用SDK接口 ``sdk.lyn_model_reset_async`` 对状态变量进行复位。所有拍推理结束调用 
-``sdk.lyn_stream_add_callback`` 接口将推理结果传回主机侧。具体接口说明参见《LynSDK开发指南
-（C&C++/Python）》。
+上述推理过程中，先将多拍的数据拷贝到设备侧，再对时间拍进行循环，每一拍推理一次，并且如果是第一帧的话调用SDK接口 ``sdk.lyn_model_reset_async`` 对状态变量进行复位。所有拍推理结束调用 
+``sdk.lyn_stream_add_callback`` 接口将推理结果传回主机侧。具体接口说明参见《LynSDK开发指南（C&C++/Python）》。
 
 以dvs-mnist数据为例，最后推理结果显示：
 
@@ -989,12 +928,7 @@ SDK推理
 
    图 流水并行设计图
 
-如 :ref:`fig_11` 所示，横向表示时间切分，纵向表示模型切分，通过时空切分来实现多卡流水
-并行推理。Device之间通过 :ref:`fig_11` 所示箭头来进行数据传递和同步。横向A00推理完成
-后先确认接收到A01推理完成的event（如红色箭头）后，A00发送膜电位给A01并发送膜电位发送
-完成的event（如红色箭头），A01确认收到膜电位发送完成的event后开始推理。纵向A00推理完
-成后先确认接收到A10推理完成的event（如橙色箭头）后，A00发送输出给A10并发送输出发送完
-成的event（如绿色箭头），A10确认收到输出发送完成的event后使用A00的输出作为输入开始推理。
+如 :ref:`fig_11` 所示，横向表示时间切分，纵向表示模型切分，通过时空切分来实现多卡流水并行推理。Device之间通过 :ref:`fig_11` 所示箭头来进行数据传递和同步。横向A00推理完成后先确认接收到A01推理完成的event（如红色箭头）后，A00发送膜电位给A01并发送膜电位发送完成的event（如红色箭头），A01确认收到膜电位发送完成的event后开始推理。纵向A00推理完成后先确认接收到A10推理完成的event（如橙色箭头）后，A00发送输出给A10并发送输出发送完成的event（如绿色箭头），A10确认收到输出发送完成的event后使用A00的输出作为输入开始推理。
 
 单机多卡测试结果
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
@@ -1015,8 +949,7 @@ SDK推理
 .. figure:: _images/推理帧率2.png
    :alt: 推理帧率1
 
-相同输入大小情况下，模型切分后推理耗时要小与单模型推理。如上图，模型二切分2颗芯片推理速度
-要大于模型不切分1颗芯片时推理速度的2倍。
+相同输入大小情况下，模型切分后推理耗时要小与单模型推理。如上图，模型二切分2颗芯片推理速度要大于模型不切分1颗芯片时推理速度的2倍。
 
 .. figure:: _images/测试结果3.png
    :alt: 测试结果1

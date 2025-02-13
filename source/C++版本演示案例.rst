@@ -1,8 +1,7 @@
 C++版本演示案例
 ====================================================================================
 
-C++版本演示案例的相关文件在 *./deploy/snn-cpp* 文件夹中，包含DVS-Gesture和Jester
-两个例子。
+C++版本演示案例的相关文件在 *./deploy/snn-cpp* 文件夹中，包含DVS-Gesture和Jester两个例子。
 
 运行方法
 ------------------------------------------------------------------------------------
@@ -52,12 +51,7 @@ C++版本演示案例的相关文件在 *./deploy/snn-cpp* 文件夹中，包含
    identifier_init(&jester, 1, 16, 3, 112, 112, 27, topk, "../jester_input", "../jester_label", "../ResNetLifItout/Net_0");
    identifier_run(jester);
 
-程序先运行DVS-Gesture数据集，之后运行Jester数据集。Identifier_init中进行类的实
-例化工作，传入数据集相关的参数和模型文件等。对于DVS-Gesture数据集，传入的参数1,
-60, 2, 40, 40分别为b, t, c, h, w。11为类别数，topk为(1,5)， *./gesture_input* 
-路径下存放的是样本的输入，每个文件对应一个样本，./label存放的是样本的标签，
-*../SeqClif3Flif2DgItout/Net_0* 路径下存放的是模型的编译生成物。对于Jester数据集，
-传入参数类似，其b，t,c,h,w为1, 16, 3, 112, 112。
+程序先运行DVS-Gesture数据集，之后运行Jester数据集。Identifier_init中进行类的实例化工作，传入数据集相关的参数和模型文件等。对于DVS-Gesture数据集，传入的参数1,60, 2, 40, 40分别为b, t, c, h, w。11为类别数，topk为(1,5)， *./gesture_input* 路径下存放的是样本的输入，每个文件对应一个样本，./label存放的是样本的标签，*../SeqClif3Flif2DgItout/Net_0* 路径下存放的是模型的编译生成物。对于Jester数据集，传入参数类似，其b，t,c,h,w为1, 16, 3, 112, 112。
 
 类实例化之后，执行 ``identifier_run`` 函数进行推理。
 

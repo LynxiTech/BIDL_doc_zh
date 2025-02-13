@@ -4,63 +4,40 @@
 Midi乐曲预处理
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-本案例选取100首乐曲进行学习和识别。对每首乐曲的MIDI文件通过mido库的MidiFile接口进行信息
-处理，将时间离散化一定的时间拍数，每个时间拍上为音阶信息（0-127）。时间拍取前38拍，音阶
-转化为one_hot编码的128维大小，并进行压缩处理，最终每首乐曲表示成[10,38]大小的数字矩阵。
+本案例选取100首乐曲进行学习和识别。对每首乐曲的MIDI文件通过mido库的MidiFile接口进行信息处理，将时间离散化一定的时间拍数，每个时间拍上为音阶信息（0-127）。时间拍取前38拍，音阶转化为one_hot编码的128维大小，并进行压缩处理，最终每首乐曲表示成[10,38]大小的数字矩阵。
 
 乐曲识别算法原理
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-在学习阶段通过Hebb法则将乐曲的前后拍之间的相关关系存储到神经网络的连接权重中。在回放及识
-别阶段，在乐曲音符的激励下，神经网络会逐层预测被记忆的乐曲下一个音符，并在回放结束之后做
-综合的相似性比较，从而完成识别功能。该方法具有类脑的学习特性，不依赖于反向传播算法，具有
-单样本一次性学习等优点。该方法中的关键类脑学习过程基于经典的Hebb法则。
+在学习阶段通过Hebb法则将乐曲的前后拍之间的相关关系存储到神经网络的连接权重中。在回放及识别阶段，在乐曲音符的激励下，神经网络会逐层预测被记忆的乐曲下一个音符，并在回放结束之后做综合的相似性比较，从而完成识别功能。该方法具有类脑的学习特性，不依赖于反向传播算法，具有单样本一次性学习等优点。该方法中的关键类脑学习过程基于经典的Hebb法则。
 
-Hebb法则是一种关于神经元连接权重的学习规则，它提出了神经元之间的连接强度如何随着时间和经
-验而改变的原理。该法则由加拿大心理学家Donald
-Hebb在1949年首次提出，被认为是神经科学和机器学习中的一个重要概念。根据Hebb法则，当一个神
-经元的活动频率与另一个神经元的活动频率高度相关时，这两个神经元之间的连接权重就会增加。换
-句话说，如果一个神经元持续地引发另一个神经元的活动，那么它们之间的连接将得到加强。
+Hebb法则是一种关于神经元连接权重的学习规则，它提出了神经元之间的连接强度如何随着时间和经验而改变的原理。该法则由加拿大心理学家Donald
+Hebb在1949年首次提出，被认为是神经科学和机器学习中的一个重要概念。根据Hebb法则，当一个神经元的活动频率与另一个神经元的活动频率高度相关时，这两个神经元之间的连接权重就会增加。换句话说，如果一个神经元持续地引发另一个神经元的活动，那么它们之间的连接将得到加强。
 
-具体来说，Hebb法则可以用以下简单的表达方式表示：当一个神经元A反复导致神经元B的兴奋时，神
-经元A和神经元B之间的突触权重将增加。这种增强的效应可以通过公式表示为：
+具体来说，Hebb法则可以用以下简单的表达方式表示：当一个神经元A反复导致神经元B的兴奋时，神经元A和神经元B之间的突触权重将增加。这种增强的效应可以通过公式表示为：
 
 .. math:: \mathrm{\Delta}w = \eta xy^{T}
 
-其中，\ :math:`x`\ 和\ :math:`y`\ 分别是相互连接的前后两层神经元的脉冲激活值，以列向量表
-示。\ :math:`\mathrm{\Delta}w`\ 是网络互联权重矩阵的更新量。
+其中，\ :math:`x`\ 和\ :math:`y`\ 分别是相互连接的前后两层神经元的脉冲激活值，以列向量表示。\ :math:`\mathrm{\Delta}w`\ 是网络互联权重矩阵的更新量。
 
 下面将介绍本文乐曲识别算法的基本模型、学习过程和回放识别过程。
 
 **基本模型**
 
-本文的乐曲识别网络是一个多层级联的、层间全连接的脉冲神经网络。网络的层数与待识别的乐曲节
-拍数一致，每层网络用以学习不同节拍间的转移关系。为减轻干扰，为每一个乐曲实例化一个神经网
-络进行学习。
+本文的乐曲识别网络是一个多层级联的、层间全连接的脉冲神经网络。网络的层数与待识别的乐曲节拍数一致，每层网络用以学习不同节拍间的转移关系。为减轻干扰，为每一个乐曲实例化一个神经网络进行学习。
 
 **学习过程**
 
-在学习阶段，对每一个待学习的乐曲，实例化一个网络去学习。在输入乐曲的激励下，根据以上给出
-的Hebb法则，对网络的每一层权重进行更新，以使其学习到乐曲节拍之间的转移关系，从而完成学习
-过程。
+在学习阶段，对每一个待学习的乐曲，实例化一个网络去学习。在输入乐曲的激励下，根据以上给出的Hebb法则，对网络的每一层权重进行更新，以使其学习到乐曲节拍之间的转移关系，从而完成学习过程。
 
 **回放识别过程**
 
-在回放识别阶段，将待识别的乐曲输入到各训练完成的网络。在其激励下，每个网络会产生各个时间
-节拍的预测输出。将这些每个时间节拍的预测脉冲输出拼接，作为特征向量，与预处理过的乐曲库进
-行相似度比较，选择相似度最大的乐曲作为识别结果。
+在回放识别阶段，将待识别的乐曲输入到各训练完成的网络。在其激励下，每个网络会产生各个时间节拍的预测输出。将这些每个时间节拍的预测脉冲输出拼接，作为特征向量，与预处理过的乐曲库进行相似度比较，选择相似度最大的乐曲作为识别结果。
 
 头部片上学习（基于BP的网络微调）
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-BIDL支持模型微调（finetune），对模型头部通过BP算法实现在线学习。在此以跨任务后网络头部
-微调案例为例描述。其目标是将A下训练的网络迁移到任务B后，对网络头部微调，从而适应B任务。
-首先根据A任务的数据集训练模型，保留该模型的骨干网（不包括最后的分类层），并加入权重被初
-始化的若干层（例如两层）全连接，其中第二层的全连接的out_channel为B数据集的分类类别数。
-微调的过程中，首先网络需加载其在A数据集上训练的权重参数，之后通过BP训练新加入的全连接层
-的参数，用以分类B数据集。模型结构调整如图25所示，此例中A数据集为DVS-Gesture，B任务采用的
-数据集为RGB-Gesture，模型结构为Backbone=SeqClif3Flif1DgItout。其中w1为第一个全连接的权重，
-w2为第二个全连接的权重，BP的目的是学习最优的w1和w2。
+BIDL支持模型微调（finetune），对模型头部通过BP算法实现在线学习。在此以跨任务后网络头部微调案例为例描述。其目标是将A下训练的网络迁移到任务B后，对网络头部微调，从而适应B任务。首先根据A任务的数据集训练模型，保留该模型的骨干网（不包括最后的分类层），并加入权重被初始化的若干层（例如两层）全连接，其中第二层的全连接的out_channel为B数据集的分类类别数。微调的过程中，首先网络需加载其在A数据集上训练的权重参数，之后通过BP训练新加入的全连接层的参数，用以分类B数据集。模型结构调整如图25所示，此例中A数据集为DVS-Gesture，B任务采用的数据集为RGB-Gesture，模型结构为Backbone=SeqClif3Flif1DgItout。其中w1为第一个全连接的权重，w2为第二个全连接的权重，BP的目的是学习最优的w1和w2。
 
 .. _fig_25:
 
@@ -114,17 +91,14 @@ w2为第二个全连接的权重，BP的目的是学习最优的w1和w2。
 
 .. math:: \mathrm{\Delta}W_{1} = X^{T}f_{Relu}^{'}(Y - Labels){W_{2}}^{T}
 
-该微调功能的的反向BP计算过程也采用pytorch表达（显式代码表达而非自动梯度）。此功能可运行于
-GPU，也可运行于Lynxi系列设备。
+该微调功能的的反向BP计算过程也采用pytorch表达（显式代码表达而非自动梯度）。此功能可运行于GPU，也可运行于Lynxi系列设备。
 
 下面以提供的案例DVS-Gesture到RGB-Gesture的finetune为例进行说明。
 
 构建微调模型
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Finetune模型是在SeqClif3Flif2DgItout模型的基础上，修改头部结构而成，backbone为
-SeqClif3Flif2DgItout_finetune，位于 *bidlcls/models/backbones/sequential/bidl_backbone_finetune.py* 
-文件中。
+Finetune模型是在SeqClif3Flif2DgItout模型的基础上，修改头部结构而成，backbone为SeqClif3Flif2DgItout_finetune，位于 *bidlcls/models/backbones/sequential/bidl_backbone_finetune.py* 文件中。
 
 ::
 
@@ -159,8 +133,7 @@ SeqClif3Flif2DgItout_finetune，位于 *bidlcls/models/backbones/sequential/bidl
          self.ON_APU = globals.get_value('ON_APU')
          self.FIT = globals.get_value('FIT')
 
-头部的 ``self.nclass`` 已修改为RGB_Gesture的分类类别。两层全连接的权重 ``self.w1`` 
-和 ``self.w2`` 通过bp算法进行更新。权重更新的代码如下：
+头部的 ``self.nclass`` 已修改为RGB_Gesture的分类类别。两层全连接的权重 ``self.w1`` 和 ``self.w2`` 通过bp算法进行更新。权重更新的代码如下：
 
 ::
 
@@ -203,9 +176,7 @@ SeqClif3Flif2DgItout_finetune，位于 *bidlcls/models/backbones/sequential/bidl
 编写配置文件
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-由于finetune功能属于在线学习，且用到的是bp算法，所以在 *applications/onlinelearning/bpfinetun* 
-路径下创建 *dvsgesture-rgb-finetune* 文件夹，配置文件 *dvsgesture_rgb_finetune.py* 
-位于该文件夹中。
+由于finetune功能属于在线学习，且用到的是bp算法，所以在 *applications/onlinelearning/bpfinetun* 路径下创建 *dvsgesture-rgb-finetune* 文件夹，配置文件 *dvsgesture_rgb_finetune.py* 位于该文件夹中。
 
 ::
 
@@ -269,8 +240,7 @@ SeqClif3Flif2DgItout_finetune，位于 *bidlcls/models/backbones/sequential/bidl
    total_epochs = 30
    ###
 
-模型backbone为SeqClif3Flif2DgItout_finetune。数据集为Rgb_gesture，并且需要设置
-total_epochs，为训练的总epoch数。
+模型backbone为SeqClif3Flif2DgItout_finetune。数据集为Rgb_gesture，并且需要设置total_epochs，为训练的总epoch数。
 
 Finetune训练
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
@@ -280,22 +250,12 @@ Finetune训练
 头部片上学习（基于STDP的网络微调）
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-BIDL提供通用本地学习框架，用户可以使用R-STDP、Hebb或自定义学习规则实现片上学习。
-本案例使用R-STDP对DVS-Gesture数据集进行finetune，首先对DVS-Gesture数据集进行训练，模型的
-backbone结构为SeqClif3Flif2DgItout，如 :ref:`fig_25` 左边所示，之后将该模型的最后一个FcLif
-层改成AdaptiveFcLif，即其中全连接层的权重为可学习状态，Lif层为spike模式，且Lif层的神经元个
-数在之前的分类类别数的基础上进行了倍数的扩充，即由多个神经元表示一个类别。Finetune的过程中
-加载在DVS-Gesture数据集上训练的权重参数，之后通过R-STDP训练AdaptiveFcLif中全连接层的参数，
-最后在DVS-Gesture验证集上评估模型效果，其中验证集进行了加噪处理，调整不同的噪声参数可以观察
-R-STDP对抗噪声的作用。
+BIDL提供通用本地学习框架，用户可以使用R-STDP、Hebb或自定义学习规则实现片上学习。本案例使用R-STDP对DVS-Gesture数据集进行finetune，首先对DVS-Gesture数据集进行训练，模型的backbone结构为SeqClif3Flif2DgItout，如 :ref:`fig_25` 左边所示，之后将该模型的最后一个FcLif层改成AdaptiveFcLif，即其中全连接层的权重为可学习状态，Lif层为spike模式，且Lif层的神经元个数在之前的分类类别数的基础上进行了倍数的扩充，即由多个神经元表示一个类别。Finetune的过程中加载在DVS-Gesture数据集上训练的权重参数，之后通过R-STDP训练AdaptiveFcLif中全连接层的参数，最后在DVS-Gesture验证集上评估模型效果，其中验证集进行了加噪处理，调整不同的噪声参数可以观察R-STDP对抗噪声的作用。
 
 R-STDP
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-突触前和突触后脉冲发放的相对时间差对神经元之间突触的改变方向和大小具有关键作用，这种基于
-突触前后脉冲发放时间相关的学习规则为STDP，即脉冲时间依赖可塑性机制，是Hebb规则的一种拓展。
-如果突触前脉冲在突触后脉冲前几毫秒内到达，会导致Long-Term Potentiation(LTP)，即权重增加。
-反之，会引起Long-Term Depression(LTD)，即权重减小，如下图所示。
+突触前和突触后脉冲发放的相对时间差对神经元之间突触的改变方向和大小具有关键作用，这种基于突触前后脉冲发放时间相关的学习规则为STDP，即脉冲时间依赖可塑性机制，是Hebb规则的一种拓展。如果突触前脉冲在突触后脉冲前几毫秒内到达，会导致Long-Term Potentiation(LTP)，即权重增加。反之，会引起Long-Term Depression(LTD)，即权重减小，如下图所示。
 
 .. figure:: _images/STDP示意图.png
    :alt: STDP示意图
@@ -308,8 +268,7 @@ R-STDP
 
    \Delta w_j = \sum_{f=1}^{N} \sum_{n=1}^{N} W(t_i^n - t_j^f)
 
-其中\ :math:`t_{i}^{n}`\ 代表突触后脉冲的发放时间，\ :math:`t_{j}^{f}`\ 代表突触前脉冲的
-发放时间。\ :math:`W(x)`\ 就代表STDP函数。常用的W函数表述如下，其中\ :math:`A_{+}`\ 和
+其中\ :math:`t_{i}^{n}`\ 代表突触后脉冲的发放时间，\ :math:`t_{j}^{f}`\ 代表突触前脉冲的发放时间。\ :math:`W(x)`\ 就代表STDP函数。常用的W函数表述如下，其中\ :math:`A_{+}`\ 和
 \ :math:`A_{-}`\ 取决于突触的当前值，时间常数取10ms。
 
 .. math::
@@ -344,14 +303,12 @@ R-STDP
 
    \frac{dw_j}{dt} = R \left( A_+(w_j) x(t) \sum_n \delta(t - t^n) - A_-(w_j) y(t) \sum_f \delta(t - t_j^f) \right)
 
-其中，R为reward，根据模型需要设置奖惩系数。本案例中，取样本的真实标签值与预测结果的
-差值为reward系数，其中预测结果由表示每个类别的所有神经元的脉冲发放的均值来表示。
+其中，R为reward，根据模型需要设置奖惩系数。本案例中，取样本的真实标签值与预测结果的差值为reward系数，其中预测结果由表示每个类别的所有神经元的脉冲发放的均值来表示。
 
 构建STDP微调模型
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-STDP微调模型是在SeqClif3Flif2DgItout模型的基础上，修改头部结构而成。修改后的模型
-backbone为SeqClif3Flif2DgItout_noise_finetune。
+STDP微调模型是在SeqClif3Flif2DgItout模型的基础上，修改头部结构而成。修改后的模型backbone为SeqClif3Flif2DgItout_noise_finetune。
 
 ::
 
@@ -376,8 +333,7 @@ backbone为SeqClif3Flif2DgItout_noise_finetune。
          assert amode == 'mean'
          self.timestep = timestep
 
-这部分的网络结构就是SeqClif3Flif2DgItout去掉最后一个self.flif2，而增加self.adapflif，
-其中class_num为DVS_Gesture的分类类别，neuron_num为每个类别对应的神经元个数。
+这部分的网络结构就是SeqClif3Flif2DgItout去掉最后一个self.flif2，而增加self.adapflif，其中class_num为DVS_Gesture的分类类别，neuron_num为每个类别对应的神经元个数。
 
 AdaptiveFcLif层的代码如下：
 
@@ -423,9 +379,7 @@ AdaptiveFcLif层的代码如下：
       ops.custom.save(self.w, f'#w')
       return x2
 
-代码主体跟FcLif一致，只是将全连接层的权重作为类的成员self.w，之后在其中加入了
-RSTDPLeanrner类，用于更新self.w。如果部署在APU上，权重需要通过load和save加载和
-保存，由于权重不会每一拍重置，所以需要在名称前加 ``#`` 号。
+代码主体跟FcLif一致，只是将全连接层的权重作为类的成员self.w，之后在其中加入了RSTDPLeanrner类，用于更新self.w。如果部署在APU上，权重需要通过load和save加载和保存，由于权重不会每一拍重置，所以需要在名称前加 ``#`` 号。
 
 RSTDPLeanrner类的update方法如下：
 
@@ -471,15 +425,12 @@ RSTDPLeanrner类的update方法如下：
          self.target_x = target_x
       return delta_w
 
-其中，self.source_x和self.target_x为lif神经元突触前和突触后的trace，在每个
-样本第一拍重置为0，其它时间根据脉冲进行更新，所以部署到APU上的话，也需要通过
-load和save进行加载和保存。
+其中，self.source_x和self.target_x为lif神经元突触前和突触后的trace，在每个样本第一拍重置为0，其它时间根据脉冲进行更新，所以部署到APU上的话，也需要通过load和save进行加载和保存。
 
 编写配置文件
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-根据任务类别，在 *applications/onlinelearnin* 路径下创建 *r-stdp* 文件夹，
-配置文件 *dvsgesture_noise_finetune.py* 文件位于该文件夹中。
+根据任务类别，在 *applications/onlinelearnin* 路径下创建 *r-stdp* 文件夹，配置文件 *dvsgesture_noise_finetune.py* 文件位于该文件夹中。
 
 ::
 
@@ -539,9 +490,7 @@ load和save进行加载和保存。
    )
    total_epochs = 30
 
-模型backbone为SeqClif3Flif2DgItout_noise_finetune。数据集为DVS_gesture，对于验证集
-需要在val_pipeline中加入 *RandomNoise* 操作，参数noise为噪声系数，并且需要设置
-total_epochs，为训练的总epoch数。
+模型backbone为SeqClif3Flif2DgItout_noise_finetune。数据集为DVS_gesture，对于验证集需要在val_pipeline中加入 *RandomNoise* 操作，参数noise为噪声系数，并且需要设置total_epochs，为训练的总epoch数。
 
 STDP微调训练
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
@@ -554,24 +503,15 @@ STDP微调训练
 ZO-SGD原理介绍
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-ZO-SGD算法是一种零阶梯度优化方法，基于同步随机扰动方法（Simultaneous Perturbation Stochastic
-Approximation，SPSA）做了存储的优化。SPSA方法通过随机扰动和损失函数的差值来近似计算模型对
-输入的梯度。该梯度原则上可适配到Adam等各种优化器上。ZO-SGD等零阶梯度方法的优势在于，不需要
-进行误差的反向传播，也不需要缓存模型前馈过程中的隐层状态值，也适用于不可导的或者黑盒模型的
-优化。因此，该类方法适合用于众核类脑芯片的模型片上学习。SPSA方法的梯度估计如下：
+ZO-SGD算法是一种零阶梯度优化方法，基于同步随机扰动方法（Simultaneous Perturbation StochasticApproximation，SPSA）做了存储的优化。SPSA方法通过随机扰动和损失函数的差值来近似计算模型对输入的梯度。该梯度原则上可适配到Adam等各种优化器上。ZO-SGD等零阶梯度方法的优势在于，不需要进行误差的反向传播，也不需要缓存模型前馈过程中的隐层状态值，也适用于不可导的或者黑盒模型的优化。因此，该类方法适合用于众核类脑芯片的模型片上学习。SPSA方法的梯度估计如下：
 
 .. math:: \widehat{\nabla L}\left( \theta,\mathbf{B} \right) = \frac{L\left( \theta + \epsilon\mathbf{z};\mathbf{B} \right) - L\left( \theta - \epsilon\mathbf{z};\mathbf{B} \right)}{2\epsilon}\mathbf{z} \approx \mathbf{z}\mathbf{z}^{T}\nabla L\left( \theta;\mathbf{B} \right)
 
-其中，\ :math:`L`\ 是要优化的目标函数，\ :math:`\epsilon`\ 是扰动步长，\ :math:`\theta`\ 
-是神经网络的待优化参数，\ :math:`\mathbf{B}`\ 是一个batch的样本。\ :math:`\mathbf{z}`\ 是
-满足一定条件的随机噪声扰动，可选用高斯分布或伯努利分布。当选用伯努利分布时，
-\ :math:`\mathbf{z}`\ 各元素是二值的，可选{-1,1}。\ :math:`\nabla L`\ 是参数\ :math:`\theta`\ 
-的准确梯度，而\ :math:`\widehat{\nabla L}`\ 是估计的梯度。实际上，\ :math:`\widehat{\nabla L}`\ 
-是\ :math:`L`\ 沿噪声\ :math:`\mathbf{z}`\ 方向的方向导数，指示了目标函数下降方向是沿
+其中，\ :math:`L`\ 是要优化的目标函数，\ :math:`\epsilon`\ 是扰动步长，\ :math:`\theta`\ 是神经网络的待优化参数，\ :math:`\mathbf{B}`\ 是一个batch的样本。\ :math:`\mathbf{z}`\ 是满足一定条件的随机噪声扰动，可选用高斯分布或伯努利分布。当选用伯努利分布时，
+\ :math:`\mathbf{z}`\ 各元素是二值的，可选{-1,1}。\ :math:`\nabla L`\ 是参数\ :math:`\theta`\ 的准确梯度，而\ :math:`\widehat{\nabla L}`\ 是估计的梯度。实际上，\ :math:`\widehat{\nabla L}`\ 是\ :math:`L`\ 沿噪声\ :math:`\mathbf{z}`\ 方向的方向导数，指示了目标函数下降方向是沿
 \ :math:`\mathbf{z}`\ 还是\ :math:`- \mathbf{z}`\ 方向，从而可以完成类似于梯度下降的优化。
 
 网络模型
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-本文档给出了应用ZO-SGD算法优化一个CNN网络做MNIST数据集分类的示例。其中，网络包含5个卷积层
-和1个全连接层。
+本文档给出了应用ZO-SGD算法优化一个CNN网络做MNIST数据集分类的示例。其中，网络包含5个卷积层和1个全连接层。
