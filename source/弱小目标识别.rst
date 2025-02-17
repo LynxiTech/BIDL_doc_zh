@@ -12,12 +12,13 @@ PCNN
 
 **训练与性能**
 
-PCNN网络无需训练。下图为PCNN网络部署在APU上的检测效果图。
+PCNN网络无需训练。下列视频为PCNN网络部署在APU上的检测效果展示：
 
-.. figure:: _images/PCNN网络部署在APU上的检测效果图.gif
-   :alt: PCNN网络部署在APU上的检测效果图
-
-   图 PCNN网络部署在APU上的检测效果图
+.. video:: _static/PCNN_APU.mp4
+   :loop:
+   :align: center
+   :width: 100%
+   :caption: PCNN网络部署在APU上的检测效果示例
 
 pcnn_de
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -31,9 +32,10 @@ pcnn_de
 
    图 pcnn_de算法流程图
 
-检测的输入为一个视频，某帧效果如下图所示。
+检测的输入为一个视频，效果如下所示：
 
-.. figure:: _images/pcnn_de算法效果检测示意图.png
-   :alt: pcnn_de算法效果检测示意图
-   
-   图 pcnn_de算法效果检测示意图
+.. video:: _static/pcnn_det_video.mp4
+   :loop:
+   :align: center
+   :width: 100%
+   :caption: pcnn_de算法效果检测示例

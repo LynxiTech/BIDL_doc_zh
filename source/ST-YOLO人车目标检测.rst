@@ -40,3 +40,14 @@ ST-YOLO网络可基于时间空间动力学，进行事件流数据目标检测�
    图 ST-YOLO网络架构图
 
 该网络包含backbone，Detect_head两个部分。其中，backbone部分基于yolov5的backbone进行修改，主要是使用了Lif层替代ReLU层，并利用Lif层的时空特性，处理时间维度的信息。Detect_head部分包含一个FPN网络和一个YoloXhead。
+
+演示示例
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+将GEN1数据集测试集中的数据输入上述网络，可输出事件流数据目标检测帧序列。以下视频为演示示例：
+
+.. video:: _static/styolo.mp4
+   :loop:
+   :align: center
+   :width: 100%
+   :caption: ST-YOLO人车目标检测演示示例
