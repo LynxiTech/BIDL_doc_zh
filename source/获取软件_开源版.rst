@@ -1,8 +1,8 @@
-访问 `BIDL开源页面 <https://github.com/openBII/BIDL>`__ 获取源码工程。
+访问 `BIDL开源页面 <https://github.com/LynxiTech/BIDL>`__ 获取源码工程。
 
-将https://github.com/openBII/BIDL仓库克隆到本地目录，例如：
+将https://github.com/LynxiTech/BIDL 仓库克隆到本地目录，例如：
 
-git clone https://github.com/openBII/BIDL.git
+git clone https://github.com/LynxiTech/BIDL.git
 
 请注意，该安装包仅包含项目源代码；关于代码文件夹的详细信息，请参阅 “目录说明”。
 
