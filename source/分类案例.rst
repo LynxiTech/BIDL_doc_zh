@@ -12,6 +12,7 @@ DVS Gesture数据在训练和推理的过程中均对时间窗口T进行循环�
 
 .. figure:: _images/DVS-gesture网络模型.png
    :alt: DVS-gesture网络模型
+   :scale: 60%
 
    图 DVS-gesture网络模型
 
@@ -30,6 +31,7 @@ MNIST-DVS网络模型包含3个Conv2dLif块，每个样本对时间拍进行循�
 
 .. figure:: _images/MNIST-DVS网络模型.png
    :alt: MNIST-DVS网络模型
+   :scale: 50%
    
    图 MNIST-DVS网络模型
 
@@ -44,7 +46,8 @@ CIFAR10-DVS
 
 .. figure:: _images/CIFAR10-DVS网络模型.png
    :alt: CIFAR10-DVS网络模型
-
+   :scale: 50%
+	
    图 CIFAR10-DVS网络模型
 
 对比与MNIST-DVS，特征提取部分Conv2dLIf由三个增加至5个，而时间聚合层SumLayer后的FcBlock只包含2层Fc。
@@ -72,6 +75,7 @@ Jester
 
 .. figure:: _images/训练Jester数据集的模型.png
    :alt: 训练Jester数据集的模型
+   :scale: 60%
 
    图 训练Jester数据集的模型
 
@@ -93,6 +97,7 @@ IMDB模型同样是对时间拍进行循环操作，每次读入单时间拍的�
 
 .. figure:: _images/IMDB网络模型.png
    :alt: IMDB网络模型
+   :scale: 50%
 
    图 IMDB网络模型
 
@@ -112,6 +117,7 @@ Luna16Cls分类任务网络模型包含3个Conv2dLif块，每个样本对时间�
 
 .. figure:: _images/MNIST-DVS网络模型.png
    :alt: Luna16Cls网络模型
+   :scale: 50%
 
    图 Luna16Cls网络模型
 
