@@ -52,7 +52,7 @@
 |              | \-\-v 1 \-\-b 2                                          |
 +--------------+----------------------------------------------------------+
 | ESImagenet   | python3 test.py \-\-config                               |
-|              | resnetlif18-itout-b64x4-esimagene \-\-checkpoint         |
+|              | resnetlif18-itout-b64x4-esimagenet \-\-checkpoint        |
 |              | latest.pth \-\-use_lyngor 1 \-\-use_legacy 0             |
 |              | \-\-v 1 \-\-b 2                                          |
 +--------------+----------------------------------------------------------+
